@@ -1,0 +1,28 @@
+{
+  "name": "be-submission-pemula",
+  "version": "1.0.0",
+  "description": "Hibatul Wafi",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon src/index",
+    "start": "node src/index"
+  },
+  "author": "hibatulwafi",
+  "license": "ISC",
+  "repository": {
+      "type": "git",
+      "url": "https://github.com/hibatulwafi/dicoding-be-bookshelf-api"
+  },
+  "dependencies": {
+    "@hapi/hapi": "^21.1.0",
+    "nanoid": "^4.0.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.31.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.26.0",
+    "nodemon": "^2.0.20"
+  }
+}
