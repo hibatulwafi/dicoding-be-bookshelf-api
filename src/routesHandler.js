@@ -1,12 +1,12 @@
 import { nanoid } from "nanoid"
 import books from "./books.js"
 
-const getAllBooksHandler = (request, h) => {
+const getAllBooksHandler = (request, handler) => {
   const { name, reading, finished } = request.query
 
   if (!name && !reading && !finished) {
-    // no query found
-    const response = h
+
+    const response = handler
       .response({
         status: "success",
         data: {
@@ -24,12 +24,11 @@ const getAllBooksHandler = (request, h) => {
 
   if (name) {
     const filteredBooksName = books.filter((book) => {
-      // if there is a query name
       const nameRegex = new RegExp(name, "gi")
       return nameRegex.test(book.name)
     })
 
-    const response = h
+    const response = handler
       .response({
         status: "success",
         data: {
@@ -46,12 +45,12 @@ const getAllBooksHandler = (request, h) => {
   }
 
   if (reading) {
-    // if there is a query reading
+
     const filteredBooksReading = books.filter(
       (book) => Number(book.reading) === Number(reading),
     )
 
-    const response = h
+    const response = handler
       .response({
         status: "success",
         data: {
@@ -67,12 +66,11 @@ const getAllBooksHandler = (request, h) => {
     return response
   }
 
-  // if there is a query finished
   const filteredBooksFinished = books.filter(
     (book) => Number(book.finished) === Number(finished),
   )
 
-  const response = h
+  const response = handler
     .response({
       status: "success",
       data: {
@@ -88,7 +86,7 @@ const getAllBooksHandler = (request, h) => {
   return response
 }
 
-const addBookHandler = (request, h) => {
+const addBookHandler = (request, handler) => {
   const {
     name,
     year,
@@ -101,8 +99,8 @@ const addBookHandler = (request, h) => {
   } = request.payload
 
   if (!name) {
-    // The client doesn't attach the name property to the request body
-    const response = h
+
+    const response = handler
       .response({
         status: "fail",
         message: "Gagal menambahkan buku. Mohon isi nama buku",
@@ -112,8 +110,8 @@ const addBookHandler = (request, h) => {
   }
 
   if (readPage > pageCount) {
-    // The client attaches a value of the read Page property that is greater than the value of the pageCount property
-    const response = h
+
+    const response = handler
       .response({
         status: "fail",
         message:
@@ -143,14 +141,12 @@ const addBookHandler = (request, h) => {
     updatedAt,
   }
 
-  books.push(newBook) // push to books array
-
+  books.push(newBook)
   const isSuccess = books.filter((note) => note.id === id).length > 0
-  // checking if newBook pushed
 
   if (isSuccess) {
-    // If the book is successfully added
-    const response = h
+
+    const response = handler
       .response({
         status: "success",
         message: "Buku berhasil ditambahkan",
@@ -162,8 +158,7 @@ const addBookHandler = (request, h) => {
     return response
   }
 
-  // The server failed to load the book due to a generic error.
-  const response = h
+  const response = handler
     .response({
       status: "error",
       message: "Buku gagal ditambahkan",
@@ -172,15 +167,14 @@ const addBookHandler = (request, h) => {
   return response
 }
 
-const getBookByIdHandler = (request, h) => {
+const getBookByIdHandler = (request, handler) => {
   const { bookId } = request.params
 
   const book = books.filter((n) => n.id === bookId)[0]
-  // check and look for book by id
 
   if (book) {
-    // When the book with the attached id is found
-    const response = h
+
+    const response = handler
       .response({
         status: "success",
         data: {
@@ -191,8 +185,7 @@ const getBookByIdHandler = (request, h) => {
     return response
   }
 
-  // When the book with the id attached by the client is not found
-  const response = h
+  const response = handler
     .response({
       status: "fail",
       message: "Buku tidak ditemukan",
@@ -201,7 +194,7 @@ const getBookByIdHandler = (request, h) => {
   return response
 }
 
-const editBookByIdHandler = (request, h) => {
+const editBookByIdHandler = (request, handler) => {
   const { bookId } = request.params
 
   const {
@@ -216,8 +209,7 @@ const editBookByIdHandler = (request, h) => {
   } = request.payload
 
   if (!name) {
-    // The client doesn't attach the name property to the request body
-    const response = h
+    const response = handler
       .response({
         status: "fail",
         message: "Gagal memperbarui buku. Mohon isi nama buku",
@@ -227,8 +219,7 @@ const editBookByIdHandler = (request, h) => {
   }
 
   if (readPage > pageCount) {
-    // The client attaches a value of the read Page property that is greater than the value of the pageCount property
-    const response = h
+    const response = handler
       .response({
         status: "fail",
         message:
@@ -240,9 +231,7 @@ const editBookByIdHandler = (request, h) => {
 
   const finished = pageCount === readPage
   const updatedAt = new Date().toISOString()
-
   const index = books.findIndex((note) => note.id === bookId)
-  // check and look for book by id
 
   if (index !== -1) {
     books[index] = {
@@ -259,8 +248,7 @@ const editBookByIdHandler = (request, h) => {
       updatedAt,
     }
 
-    // When the book is updated successfully
-    const response = h
+    const response = handler
       .response({
         status: "success",
         message: "Buku berhasil diperbarui",
@@ -269,8 +257,7 @@ const editBookByIdHandler = (request, h) => {
     return response
   }
 
-  // id attached by the client is not found by the server
-  const response = h
+  const response = handler
     .response({
       status: "fail",
       message: "Gagal memperbarui buku. Id tidak ditemukan",
@@ -279,17 +266,15 @@ const editBookByIdHandler = (request, h) => {
   return response
 }
 
-const deleteBookByIdHandler = (request, h) => {
+const deleteBookByIdHandler = (request, handler) => {
   const { bookId } = request.params
 
   const index = books.findIndex((note) => note.id === bookId)
-  // check and look for book by id
 
   if (index !== -1) {
     books.splice(index, 1)
 
-    // If id belongs to one of the books
-    const response = h
+    const response = handler
       .response({
         status: "success",
         message: "Buku berhasil dihapus",
@@ -298,8 +283,7 @@ const deleteBookByIdHandler = (request, h) => {
     return response
   }
 
-  // If the id attached is not owned by any book
-  const response = h
+  const response = handler
     .response({
       status: "fail",
       message: "Buku gagal dihapus. Id tidak ditemukan",
